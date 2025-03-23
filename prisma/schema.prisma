@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bandas {
+  id              BigInt       @id @default(autoincrement())
+  nombre          String       @db.VarChar(100)
+  fundacion       Int?         @db.SmallInt
+  num_componentes Int?         @db.SmallInt
+  tipo            String       @db.Char(30)
+  contratos       contratos[]
+  repertorio      repertorio[]
+  seguidores      seguidores[]
+}
+
+model contratos {
+  id_hdad     BigInt
+  id_banda    BigInt
+  bandas      bandas      @relation(fields: [id_banda], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Contratos_id_banda_fk")
+  hermandades hermandades @relation(fields: [id_hdad], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Contratos_id_hdad_fk")
+
+  @@id([id_hdad, id_banda])
+  @@index([id_banda], map: "Contratos_id_banda_fk")
+}
+
+model devotos {
+  id_hdad     BigInt
+  id_usuario  BigInt
+  hermandades hermandades @relation(fields: [id_hdad], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Devotos_id_hdad_fk")
+  usuarios    usuarios    @relation(fields: [id_usuario], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Devotos_id_usuario_fk")
+
+  @@id([id_hdad, id_usuario])
+  @@index([id_usuario], map: "Devotos_id_usuario_fk")
+}
+
+model eventos {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @db.VarChar(255)
+  descripcion String?   @db.Text
+  fecha       DateTime  @db.DateTime(0)
+  id_usuario  BigInt?
+  usuarios    usuarios? @relation(fields: [id_usuario], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Eventos_id_usuario_fk")
+
+  @@index([id_usuario], map: "Eventos_id_usuario_fk")
+}
+
+model hermandades {
+  id           BigInt         @id @default(autoincrement())
+  nombre       String         @db.VarChar(100)
+  apelativo    String?        @db.VarChar(25)
+  fundacion    Int            @db.SmallInt
+  titulares    String?        @db.VarChar(150)
+  sede         String?        @db.VarChar(75)
+  dia          String?        @db.VarChar(25)
+  itinerario   String?        @db.Text
+  escudo       String?        @db.VarChar(100)
+  latitud      Decimal?       @db.Decimal(9, 6)
+  longitud     Decimal?       @db.Decimal(9, 6)
+  contratos    contratos[]
+  devotos      devotos[]
+  hdad_images  hdad_images[]
+  noticiashdad noticiashdad[]
+}
+
+model hdad_images {
+  id_hdad     BigInt
+  image_url   String      @db.VarChar(150)
+  hermandades hermandades @relation(fields: [id_hdad], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Hdad_images_id_hdad_fk")
+
+  @@id([id_hdad, image_url])
+}
+
+model marchas {
+  id         BigInt       @id @default(autoincrement())
+  nombre     String       @db.VarChar(30)
+  autor      String?      @db.VarChar(30)
+  link       String?      @db.Text
+  repertorio repertorio[]
+}
+
+model noticias {
+  id           BigInt         @id @default(autoincrement())
+  titulo       String         @db.Text
+  cuerpo       String         @db.Text
+  fecha        DateTime       @db.Date
+  imagen       String?        @db.Text
+  noticiashdad noticiashdad[]
+}
+
+model noticiashdad {
+  id_noticia  BigInt
+  id_hdad     BigInt
+  hermandades hermandades @relation(fields: [id_hdad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "NoticiasHdad_id_hdad_fk")
+  noticias    noticias    @relation(fields: [id_noticia], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "NoticiasHdad_id_noticia_fk")
+
+  @@id([id_noticia, id_hdad])
+  @@index([id_hdad], map: "NoticiasHdad_id_hdad_fk")
+}
+
+model repertorio {
+  id_banda  BigInt
+  id_marcha BigInt
+  bandas    bandas  @relation(fields: [id_banda], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Repertorio_id_banda_fk")
+  marchas   marchas @relation(fields: [id_marcha], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Repertorio_id_marcha_fk")
+
+  @@id([id_banda, id_marcha])
+  @@index([id_marcha], map: "Repertorio_id_marcha_fk")
+}
+
+model seguidores {
+  id_usuario BigInt
+  id_banda   BigInt
+  bandas     bandas   @relation(fields: [id_banda], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Seguidores_id_banda_fk")
+  usuarios   usuarios @relation(fields: [id_usuario], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Seguidores_id_usuario_fk")
+
+  @@id([id_usuario, id_banda])
+  @@index([id_banda], map: "Seguidores_id_banda_fk")
+}
+
+model usuarios {
+  id         BigInt        @id @default(autoincrement())
+  nombre     String        @unique(map: "nombre") @db.VarChar(30)
+  contrasena String        @map("contraseña") @db.VarChar(70)
+  correo     String        @unique(map: "correo") @db.VarChar(40)
+  avatar     String?       @default("https://i.imgur.com/btjJnen.jpeg") @db.VarChar(150)
+  rol        usuarios_rol? @default(Usuario)
+  devotos    devotos[]
+  eventos    eventos[]
+  seguidores seguidores[]
+}
+
+enum usuarios_rol {
+  Usuario
+  Colaborador
+  Admin
+}
