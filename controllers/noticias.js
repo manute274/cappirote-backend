@@ -28,33 +28,34 @@ export const createNoticia = async (req, res) => {
 
 // Obtener todas las noticias
 export const getAllNoticias = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10; 
-        const salto = (page - 1) * limit;
-    
-        const totalNoticias = await prisma.noticias.count();
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10; 
+    const salto = (page - 1) * limit;
 
-        const noticias = await prisma.noticias.findMany({
-          skip: salto,   // Omite los primeros N elementos
-          take: limit,  // Limita el número de elementos devueltos
-          orderBy: {
-            fecha: 'desc',
-          }
-        });
-    
-        // Responder con los datos y la información de la paginación
-        res.json({
-          total: totalNoticias,
-          page: page,
-          limit: limit,
-          totalPages: Math.ceil(totalNoticias / limit),
-          data: noticias,
-        });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener noticias' });
+    const totalNoticias = await prisma.noticias.count();
+
+    const noticias = await prisma.noticias.findMany({
+      skip: salto,   // Omite los primeros N elementos
+      take: limit,  // Limita el número de elementos devueltos
+      orderBy: {
+        fecha: 'desc',
       }
+    });
+
+    // Responder con los datos y la información de la paginación
+    res.json({
+      total: totalNoticias,
+      page: page,
+      limit: limit,
+      totalPages: Math.ceil(totalNoticias / limit),
+      data: noticias,
+    });
+  
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener noticias' });
+  }
 }
 
 //Buscar Noticia
