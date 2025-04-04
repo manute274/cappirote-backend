@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 // Crear una hermandad
 export const createHdad = async (req, res) => {
-    const { nombre, apelativo, titulares, fundacion, sede, dia, itinerario } = req.body;
+    const { nombre, apelativo, titulares, fundacion, sede, dia, itinerario, escudo } = req.body;
 
     //console.log(apelativo);
     try {
         const nuevahermandad = await prisma.hermandades.create({
-            data: { nombre, apelativo, fundacion, titulares, sede, dia, itinerario},
+            data: { nombre, apelativo, fundacion, titulares, sede, dia, itinerario, escudo},
         });
-        res.json(nuevahermandad);
+        return res.status(201).json({ message: "Hermandad creada con éxito", data: nuevahermandad });
     } catch (error) {
         console.log(error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {

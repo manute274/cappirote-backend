@@ -8,10 +8,12 @@ basePath: /
 schemes:
   - http
 tags:
+  - name: hermandades
   - name: devotos
   - name: eventos
-  - name: usuario
+  - name: usuarios
   - name: imagenes
+  - name: noticias
 paths:
   /devotos:
     post:
@@ -229,6 +231,8 @@ paths:
           description: Internal Server Error
   /images/{id_hdad}:
     post:
+      tags:
+        - imagenes
       description: ''
       parameters:
         - name: id_hdad
@@ -257,6 +261,8 @@ paths:
         '500':
           description: Internal Server Error
     get:
+      tags:
+      - imagenes
       description: ''
       parameters:
         - name: id_hdad
@@ -271,6 +277,8 @@ paths:
         '500':
           description: Internal Server Error
     delete:
+      tags:
+      - imagenes
       description: ''
       parameters:
         - name: id_hdad
@@ -296,6 +304,8 @@ paths:
           description: Internal Server Error
   /hermandades:
     post:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: body
@@ -323,12 +333,16 @@ paths:
         '500':
           description: Internal Server Error
     get:
+      tags:
+      - hermandades
       description: ''
       responses:
         '200':
           description: OK
   /hermandades/{id}:
     get:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: id
@@ -343,6 +357,8 @@ paths:
         '500':
           description: Internal Server Error
     put:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: id
@@ -374,6 +390,8 @@ paths:
         '500':
           description: Internal Server Error
     delete:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: id
@@ -387,6 +405,8 @@ paths:
           description: Internal Server Error
   /hermandades/dia/{dia}:
     get:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: dia
@@ -400,6 +420,8 @@ paths:
           description: Internal Server Error
   /hermandades/updatelocation:
     patch:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: body
@@ -422,6 +444,8 @@ paths:
           description: Internal Server Error
   /hermandades/location/{id}:
     get:
+      tags:
+      - hermandades
       description: ''
       parameters:
         - name: id
@@ -439,6 +463,8 @@ paths:
           description: Internal Server Error
   /noticias:
     post:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: body
@@ -460,6 +486,8 @@ paths:
         '500':
           description: Internal Server Error
     get:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: page
@@ -475,6 +503,8 @@ paths:
           description: Internal Server Error
   /noticias/search:
     get:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: search
@@ -493,6 +523,8 @@ paths:
           description: Internal Server Error
   /noticias/{id}:
     get:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: id
@@ -507,6 +539,8 @@ paths:
         '500':
           description: Internal Server Error
     put:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: id
@@ -532,6 +566,8 @@ paths:
         '500':
           description: Internal Server Error
     delete:
+      tags:
+      - noticias
       description: ''
       parameters:
         - name: id
@@ -545,6 +581,8 @@ paths:
           description: Internal Server Error
   /register:
     post:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: body
@@ -565,6 +603,8 @@ paths:
           description: Internal Server Error
   /login:
     post:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: body
@@ -585,6 +625,8 @@ paths:
           description: Internal Server Error
   /usuarios:
     get:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: authorization
@@ -599,6 +641,8 @@ paths:
           description: Internal Server Error
   /usuarios/{id}:
     get:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: id
@@ -618,6 +662,8 @@ paths:
         '500':
           description: Internal Server Error
     put:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: id
@@ -646,6 +692,8 @@ paths:
         '500':
           description: Internal Server Error
     delete:
+      tags:
+      - usuarios
       description: ''
       parameters:
         - name: id

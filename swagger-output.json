@@ -21,10 +21,13 @@
       "name": "eventos"
     },
     {
-      "name": "usuario"
+      "name": "usuarios"
     },
     {
       "name": "imagenes"
+    },
+    {
+      "name": "noticias"
     }
   ],
   "paths": {
@@ -537,6 +540,9 @@
         }
       },
       "get": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -547,6 +553,9 @@
     },
     "/hermandades/{id}": {
       "get": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -569,6 +578,9 @@
         }
       },
       "put": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -618,6 +630,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -639,6 +654,9 @@
     },
     "/hermandades/dia/{dia}": {
       "get": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -660,6 +678,9 @@
     },
     "/hermandades/updatelocation": {
       "patch": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -696,6 +717,9 @@
     },
     "/hermandades/location/{id}": {
       "get": {
+        "tags": [
+          "hermandades"
+        ],
         "description": "",
         "parameters": [
           {
@@ -723,6 +747,9 @@
     },
     "/noticias": {
       "post": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -757,6 +784,9 @@
         }
       },
       "get": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -782,6 +812,9 @@
     },
     "/noticias/search": {
       "get": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -812,6 +845,9 @@
     },
     "/noticias/{id}": {
       "get": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -834,6 +870,9 @@
         }
       },
       "put": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -874,6 +913,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "noticias"
+        ],
         "description": "",
         "parameters": [
           {
@@ -895,6 +937,9 @@
     },
     "/register": {
       "post": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
@@ -928,6 +973,9 @@
     },
     "/login": {
       "post": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
@@ -961,6 +1009,9 @@
     },
     "/usuarios": {
       "get": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
@@ -984,6 +1035,9 @@
     },
     "/usuarios/{id}": {
       "get": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1014,6 +1068,9 @@
         }
       },
       "put": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1059,6 +1116,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "usuarios"
+        ],
         "description": "",
         "parameters": [
           {
