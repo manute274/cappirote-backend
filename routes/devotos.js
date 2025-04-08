@@ -10,6 +10,6 @@ router.get('/devotos/user/:id_usuario', getDevotobyUserid);
 router.get('/devotos/hdad/:id_hdad', getDevotobyHdadid);
 router.post('/devotos/comprobarrelacion', checkDevoto);
 //router.put('/devotos/:id', updateDevoto);
-router.delete('/devotos/', verificarToken, deleteDevoto);
+router.delete('/devotos/:id_hdad/usuario/:id_usuario', verificarToken, deleteDevoto);
 
 export default router;

@@ -3,16 +3,29 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const validateInputs = (nombre, apelativo, titulares, fundacion, sede, dia, itinerario) => {
+    if (!nombre || !apelativo || !titulares || !fundacion || !sede || !dia || !itinerario || !escudo) {
+        return "Todos los campos son obligatorios";
+    }
+    // Aquí puedes agregar más validaciones específicas si es necesario
+    return null;
+};
+
 // Crear una hermandad
 export const createHdad = async (req, res) => {
     const { nombre, apelativo, titulares, fundacion, sede, dia, itinerario, escudo } = req.body;
 
-    //console.log(apelativo);
+    const validationError = validateInputs(nombre, apelativo, titulares, fundacion, sede, dia, itinerario, escudo);
+    if (validationError) {
+        return res.status(400).json({ error: validationError });
+    }
+
     try {
         const nuevahermandad = await prisma.hermandades.create({
             data: { nombre, apelativo, fundacion, titulares, sede, dia, itinerario, escudo},
         });
         return res.status(201).json({ message: "Hermandad creada con éxito", data: nuevahermandad });
+        
     } catch (error) {
         console.log(error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {

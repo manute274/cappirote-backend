@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { swaggerUi, swaggerSpec } from './swagger.js';
-import swaggerDocument from './swagger-output.json' with { type: "json" };
+import swaggerDocument from './openapi.json' with { type: "json" };
 import userRouter from "./routes/usuarios.js";
 import hdadRouter from "./routes/hermandades.js";
 import devotosRouter from "./routes/devotos.js";

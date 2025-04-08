@@ -1,0 +1,1592 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API CAPPirote",
+    "description": "Documentación de la API CAPPirote",
+    "version": "1.0.2"
+  },
+  "servers": [
+    {
+      "url": "https://cappirote-bf5611b04e17.herokuapp.com/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "hermandades"
+    },
+    {
+      "name": "usuarios"
+    },
+    {
+      "name": "imagenes"
+    },
+    {
+      "name": "devotos"
+    },
+    {
+      "name": "eventos"
+    },
+    {
+      "name": "noticias"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/hermandades": {
+      "get": {
+        "tags": [
+          "hermandades"
+        ],
+        "summary": "Obtener todas las hermandades",
+        "description": "Recupera todas las hermandades disponibles en el sistema.",
+        "operationId": "getAllHdads",
+        "responses": {
+          "200": {
+            "description": "Lista de hermandades recuperada con éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "ID de la hermandad",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "description": "Nombre de la hermandad",
+                        "example": "Hdad de El Prado"
+                      },
+                      "apelativo": {
+                        "type": "string",
+                        "description": "Apelativo o nombre corto de la hermandad",
+                        "example": "El Prado"
+                      },
+                      "fundacion": {
+                        "type": "integer",
+                        "description": "Año de fundación de la hermandad",
+                        "example": 2009
+                      },
+                      "titulares": {
+                        "type": "string",
+                        "description": "Titulares de la hermandad",
+                        "example": "Ntra Señora del Prado en su Dolor"
+                      },
+                      "sede": {
+                        "type": "string",
+                        "description": "Sede de la hermandad",
+                        "example": "Capilla de Nuestra Señora del Prado en su Dolor"
+                      },
+                      "dia": {
+                        "type": "string",
+                        "description": "Día de la celebración de la hermandad",
+                        "example": "Viernes de Dolores"
+                      },
+                      "itinerario": {
+                        "type": "string",
+                        "description": "Itinerario de la hermandad",
+                        "example": "Templo, Plaza Fuentepiña, Costa Rica, Sainete, Escacena del Campo..."
+                      },
+                      "escudo": {
+                        "type": "string",
+                        "description": "Ruta de la imagen del escudo de la hermandad",
+                        "example": "assets/images/Escudo-Prado.jpg"
+                      },
+                      "latitud": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Latitud",
+                        "example": null
+                      },
+                      "longitud": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Longitud",
+                        "example": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno en el servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error interno del servidor al recuperar las hermandades."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "hermandades"
+        ],
+        "summary": "Crea una nueva hermandad",
+        "description": "Crea una nueva hermandad",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "object",
+                    "example": "Hdad de Prueba"
+                  },
+                  "apelativo": {
+                    "type": "object",
+                    "example": "La Prueba"
+                  },
+                  "titulares": {
+                    "type": "object",
+                    "example": "Santo Cristo Cautivo y María Santísima de la Misericordia"
+                  },
+                  "fundacion": {
+                    "type": "object",
+                    "example": "1981"
+                  },
+                  "sede": {
+                    "type": "object",
+                    "example": "Capilla del Santo Cristo Cautivo"
+                  },
+                  "dia": {
+                    "type": "object",
+                    "example": "Lunes Santo"
+                  },
+                  "itinerario": {
+                    "type": "object",
+                    "example": "Templo, Plaza de la Misericordia, Ruiz de Alarcón, Fernando de Villalón, Rubén Darío, Chucena, Virgen de Montemayor, Virgen de las Angustias, Avenida Santa Marta, Cristo de la Redención, Rotonda Huerto Paco, Avenida Adoratrices, Fray Junípero Serra, Fray Juan Pérez, San Sebastián, Plaza de Los Litris, Jesús de la Pasión, Plaza de San Pedro, Daoiz, Paseo Santa Fe, Puerto, Cardenal Albornoz, José Nogales, La Placeta, CARRERA OFICIAL, San Salvador, Fernando el Católico, Palos, Plaza Quintero Báez, La Fuente, Plaza de San Pedro, San Andrés, Plaza Ivonne Cazenave, Avenida Manuel Siurot, Avenida San Antonio, Rotonda Huerto Paco, Cristo de la Redención, Avenida Santa Marta, Virgen del Reposo, Manzanilla, Virgen de Montemayor, Remo, Díaz del Castillo, Pasaje del Cautivo, Plaza de la Misericordia y Templo."
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/hermandades/{id}": {
+      "get": {
+        "tags": [
+          "hermandades"
+        ],
+        "summary": "Consigue la informacion de una hermandad por su ID",
+        "description": "Consigue la informacion de una hermandad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "hermandades"
+        ],
+        "summary": "Actualiza una Hermandad",
+        "description": "Actualiza una Hermandad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la hermandad a actualizar",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "apelativo": {
+                    "type": "string"
+                  },
+                  "titulares": {
+                    "type": "string"
+                  },
+                  "fundacion": {
+                    "type": "string"
+                  },
+                  "sede": {
+                    "type": "string"
+                  },
+                  "dia": {
+                    "type": "string"
+                  },
+                  "itinerario": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nombre",
+                  "apelativo",
+                  "titulares",
+                  "fundacion",
+                  "sede",
+                  "dia",
+                  "itinerario"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hermandad actualizada correctamente"
+          },
+          "500": {
+            "description": "Error actualizando hermandad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "hermandades"
+        ],
+        "summary": "Borra una hermandad",
+        "description": "Borra una hermandad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/hermandades/dia/{dia}": {
+      "get": {
+        "tags": [
+          "hermandades"
+        ],
+        "parameters": [
+          {
+            "name": "dia",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/hermandades/updatelocation": {
+      "patch": {
+        "tags": [
+          "hermandades"
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "latitud": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "longitud": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/hermandades/location/{id}": {
+      "get": {
+        "tags": [
+          "hermandades"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "correo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "contrasena": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "correo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "contrasena": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "tags": [
+          "usuarios"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/usuarios/{id}": {
+      "get": {
+        "tags": [
+          "usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "correo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "contraseña": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/images/{id_hdad}": {
+      "get": {
+        "tags": [
+          "imagenes"
+        ],
+        "parameters": [
+          {
+            "name": "id_hdad",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "imagenes"
+        ],
+        "parameters": [
+          {
+            "name": "id_hdad",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image_urls": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/images/{id_hdad}/{image_url}": {
+      "delete": {
+        "tags": [
+          "imagenes"
+        ],
+        "summary": "Eliminar una imagen asociada a una hermandad",
+        "description": "Elimina la imagen asociada a la hermandad con el `id_hdad` y el `image_url` proporcionados.",
+        "operationId": "deleteImage",
+        "parameters": [
+          {
+            "name": "id_hdad",
+            "in": "path",
+            "description": "ID de la hermandad que contiene la imagen.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "image_url",
+            "in": "path",
+            "description": "URL de la imagen a eliminar.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token JWT para autenticación (si es necesario).",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {token}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Imagen eliminada con éxito.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Imagen borrada con éxito"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud incorrecta (falta `id_hdad` o `image_url`, o el formato de `id_hdad` es incorrecto).",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Faltan parámetros necesarios: id_hdad o image_url"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Imagen no encontrada o no existe.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Imagen no encontrada o no existe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor al eliminar la imagen.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error eliminando la imagen"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devotos": {
+      "get": {
+        "tags": [
+          "devotos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "devotos"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_usuario": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "id_hdad": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/devotos/{id_hdad}/usuario/{id_usuario}": {
+      "delete": {
+        "tags": [
+          "devotos"
+        ],
+        "summary": "Elimina la relación entre un usuario y una hermandad.",
+        "description": "Elimina la relación entre un usuario y una hermandad.",
+        "operationId": "deleteDevoto",
+        "parameters": [
+          {
+            "name": "id_hdad",
+            "in": "path",
+            "description": "ID de la hermandad",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 4
+            }
+          },
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Devoto eliminado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Devoto eliminado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Faltan parámetros en la solicitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Faltan parámetros necesarios (id_hdad, id_usuario)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró el devoto con los ID proporcionados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Devoto no encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno en el servidor al intentar eliminar el devoto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error interno del servidor al eliminar el devoto."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/devotos/user/{id_usuario}": {
+      "get": {
+        "tags": [
+          "devotos"
+        ],
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/devotos/hdad/{id_hdad}": {
+      "get": {
+        "tags": [
+          "devotos"
+        ],
+        "parameters": [
+          {
+            "name": "id_hdad",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/devotos/comprobarrelacion": {
+      "post": {
+        "tags": [
+          "devotos"
+        ],
+        "summary": "Comprueba la existencia de relacion entre Hdad y usuario",
+        "description": "Comprueba la existencia de relacion entre Hdad y usuario",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_hdad": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "id_usuario": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/eventos": {
+      "get": {
+        "tags": [
+          "eventos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "eventos"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "descripcion": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "fecha": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "id_usuario": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/eventos/{id}": {
+      "get": {
+        "tags": [
+          "eventos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "eventos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "descripcion": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "fecha": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "id_usuario": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "eventos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/noticias": {
+      "get": {
+        "tags": [
+          "noticias"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "noticias"
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titulo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "cuerpo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "fecha": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "imagen": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/noticias/search": {
+      "get": {
+        "tags": [
+          "noticias"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/noticias/{id}": {
+      "get": {
+        "tags": [
+          "noticias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "noticias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titulo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "cuerpo": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "fecha": {
+                    "type": "object",
+                    "example": "any"
+                  },
+                  "imagen": {
+                    "type": "object",
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "noticias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "x-original-swagger-version": "2.0"
+}

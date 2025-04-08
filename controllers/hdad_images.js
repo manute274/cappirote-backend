@@ -83,18 +83,29 @@ export const updateImage = async (req, res) => {
 // Eliminar una imagen
 // app.delete('/images/:id_hdad/:image_url'
 export const deleteImage = async (req, res) => {
-    const { id_hdad } = req.params;
-    const { image_url } = req.body;
-    console.log(image_url);
+    const { id_hdad, image_url } = req.params;
+    const decodedImageUrl = decodeURIComponent(image_url);
+
+    if (!id_hdad || !image_url) {
+      return res.status(400).json({ error: 'Faltan parámetros necesarios: id_hdad o image_url' });
+    }
+    
+    if (isNaN(id_hdad) || !BigInt(id_hdad)) {
+      return res.status(400).json({ error: 'El id_hdad debe ser un número válido' });
+    }
+  
     try {
       const deletedImage = await prisma.hdad_images.delete({
         where: {
           id_hdad_image_url: {
             id_hdad: BigInt(id_hdad),
-            image_url
+            image_url: decodedImageUrl
           }
         }
       });
+      if (!deletedImage) {
+        return res.status(404).json({ error: 'Imagen no encontrada o no existe' });
+      }
       res.status(200).json({message: "Imagen borrada con éxito"});
     } catch (error) {
       res.status(500).json({ error: 'Error eliminando la imagen' });

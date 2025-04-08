@@ -71,18 +71,24 @@ export const getDevotobyHdadid = async (req, res) => {
 
 // Eliminar un devoto por ID
 export const deleteDevoto = async (req, res) => {
-    const { id_hdad, id_usuario } = req.body;
+    const { id_hdad, id_usuario } = req.params;
     try {
-        await prisma.devotos.delete({
+        const devotoEliminado = await prisma.devotos.delete({
             where: {
                 id_hdad_id_usuario: {id_hdad, id_usuario}
             },
         });
+        if (!devotoEliminado) {
+            return res.status(404).json({ error: "Devoto no encontrado." });
+        }
 
         res.json({ mensaje: "Devoto eliminado" });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Error eliminando devoto" });
+        if (error.code === 'P2025') {
+            return res.status(404).json({ error: "Devoto no encontrado." });
+        }
+        res.status(500).json({ error: "Error interno del servidor al eliminar el devoto." });
     }
 };
 
