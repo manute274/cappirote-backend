@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { swaggerUi, swaggerSpec } from './swagger.js';
 import swaggerDocument from './openapi.json' with { type: "json" };
+import fetch from 'node-fetch';
 import userRouter from "./routes/usuarios.js";
 import hdadRouter from "./routes/hermandades.js";
 import devotosRouter from "./routes/devotos.js";
@@ -21,6 +22,22 @@ BigInt.prototype.toJSON = function () { return Number(this) }
 
 
 const app = express();
+
+// Ruta proxy de imagen para evitar CORS en Flutter Web
+app.get('/api/image-proxy', async (req, res) => {
+  const imageUrl = req.query.url;
+  try {
+    const response = await fetch(imageUrl);
+    const contentType = response.headers.get('content-type');
+    const buffer = await response.arrayBuffer();
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    res.status(500).send('Error cargando imagen');
+  }
+});
 
 app.use(express.json());
 app.use(cors());
