@@ -1,0 +1,1818 @@
+openapi: 3.0.1
+info:
+  title: API CAPPirote
+  description: Documentación de la API CAPPirote
+  version: 1.0.3
+servers:
+- url: https://cappirote-bf5611b04e17.herokuapp.com/api
+tags:
+- name: hermandades
+- name: usuarios
+- name: imagenes
+- name: devotos
+- name: eventos
+- name: noticias
+components:   
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Hermandad:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 8
+        nombre:
+          type: string
+          example: Hdad de El Perdón
+        apelativo:
+          type: string
+          example: El Perdón
+        fundacion:
+          type: integer
+          example: 1984
+        titulares:
+          type: string
+          example: Santísimo Cristo del Perdón y Nuestra Señora de los Dolores
+        sede:
+          type: string
+          example: Parroquia Santa Teresa de Jesús
+        dia:
+          type: string
+          example: Lunes Santo
+        itinerario:
+          type: string
+          example: >
+            Templo, Plaza Cristo del Perdón, Avenida Virgen de los Dolores del Perdon, ...
+        escudo:
+          type: string
+          example: assets/images/Escudo-Perdon.jpg
+        latitud:
+          type: string
+          nullable: true
+          example: "37.2614"
+        longitud:
+          type: string
+          nullable: true
+          example: "-6.9421"
+    Noticia:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: El ID de la noticia.
+        titulo:
+          type: string
+          description: El título de la noticia.
+        cuerpo:
+          type: string
+          description: El contenido completo de la noticia.
+        fecha:
+          type: string
+          format: date-time
+          description: La fecha de la noticia.
+        imagen:
+          type: string
+          description: URL de la imagen asociada a la noticia.
+paths:
+  /hermandades:
+    get:
+      tags:
+      - hermandades
+      summary: Obtener todas las hermandades
+      description: Recupera todas las hermandades disponibles en el sistema.
+      operationId: getAllHdads
+      responses:
+        '200':
+          description: Lista de hermandades recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID de la hermandad
+                      example: 1
+                    nombre:
+                      type: string
+                      description: Nombre de la hermandad
+                      example: "Hdad de El Prado"
+                    apelativo:
+                      type: string
+                      description: Apelativo o nombre corto de la hermandad
+                      example: "El Prado"
+                    fundacion:
+                      type: integer
+                      description: Año de fundación de la hermandad
+                      example: 2009
+                    titulares:
+                      type: string
+                      description: Titulares de la hermandad
+                      example: "Ntra Señora del Prado en su Dolor"
+                    sede:
+                      type: string
+                      description: Sede de la hermandad
+                      example: "Capilla de Nuestra Señora del Prado en su Dolor"
+                    dia:
+                      type: string
+                      description: Día de la celebración de la hermandad
+                      example: "Viernes de Dolores"
+                    itinerario:
+                      type: string
+                      description: Itinerario de la hermandad
+                      example: "Templo, Plaza Fuentepiña, Costa Rica, Sainete, Escacena del Campo..."
+                    escudo:
+                      type: string
+                      description: Ruta de la imagen del escudo de la hermandad
+                      example: "assets/images/Escudo-Prado.jpg"
+                    latitud:
+                      type: number
+                      format: float
+                      description: Latitud
+                      example: null
+                    longitud:
+                      type: number
+                      format: float
+                      description: Longitud
+                      example: null
+        '500':
+          description: Error interno en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error interno del servidor al recuperar las hermandades."
+    post:
+      tags:
+      - hermandades
+      summary: Crea una nueva hermandad
+      description: Crea una nueva hermandad
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: object
+                  example: Hdad de Prueba
+                apelativo:
+                  type: object
+                  example: La Prueba
+                titulares:
+                  type: object
+                  example: Santo Cristo Cautivo y María Santísima de la Misericordia
+                fundacion:
+                  type: object
+                  example: "1981"
+                sede:
+                  type: object
+                  example: Capilla del Santo Cristo Cautivo
+                dia:
+                  type: object
+                  example: Lunes Santo
+                itinerario:
+                  type: object
+                  example: "Templo, Plaza de la Misericordia, Ruiz de Alarcón, Fernando\
+                    \ de Villalón, Rubén Darío, Chucena, Virgen de Montemayor, Virgen\
+                    \ de las Angustias, Avenida Santa Marta, Cristo de la Redenció\
+                    n, Rotonda Huerto Paco, Avenida Adoratrices, Fray Junípero Serra,\
+                    \ Fray Juan Pérez, San Sebastián, Plaza de Los Litris, Jesús de\
+                    \ la Pasión, Plaza de San Pedro, Daoiz, Paseo Santa Fe, Puerto,\
+                    \ Cardenal Albornoz, José Nogales, La Placeta, CARRERA OFICIAL,\
+                    \ San Salvador, Fernando el Católico, Palos, Plaza Quintero Bá\
+                    ez, La Fuente, Plaza de San Pedro, San Andrés, Plaza Ivonne Cazenave,\
+                    \ Avenida Manuel Siurot, Avenida San Antonio, Rotonda Huerto Paco,\
+                    \ Cristo de la Redención, Avenida Santa Marta, Virgen del Reposo,\
+                    \ Manzanilla, Virgen de Montemayor, Remo, Díaz del Castillo, Pasaje\
+                    \ del Cautivo, Plaza de la Misericordia y Templo."
+        required: false
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
+  /hermandades/{id}:
+    get:
+      tags:
+      - hermandades
+      summary: Consigue la informacion de una hermandad por su ID
+      description: Consigue la informacion de una hermandad
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "404":
+          description: Not Found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+    put:
+      tags:
+      - hermandades
+      summary: Actualiza una Hermandad
+      description: Actualiza una Hermandad
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la hermandad a actualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                apelativo:
+                  type: string
+                titulares:
+                  type: string
+                fundacion:
+                  type: string
+                sede:
+                  type: string
+                dia:
+                  type: string
+                itinerario:
+                  type: string
+              required:
+                - nombre
+                - apelativo
+                - titulares
+                - fundacion
+                - sede
+                - dia
+                - itinerario
+      responses:
+        '200':
+          description: Hermandad actualizada correctamente
+        '500':
+          description: Error actualizando hermandad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      tags:
+      - hermandades
+      summary: Borra una hermandad
+      description: Borra una hermandad
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+  /hermandades/dia/{dia}:
+    get:
+      tags:
+      - hermandades
+      summary: Obtener hermandades por día
+      description: Retorna un listado de hermandades que procesionan en el día especificado.
+      parameters:
+        - name: dia
+          in: path
+          required: true
+          description: Día de la Semana Santa ("Domingo de Ramos", "Lunes Santo", "Martes Santo", etc.)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de hermandades para el día especificado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hermandad'
+        '500':
+          description: Error del servidor al obtener las hermandades
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al obtener las hermandades
+  /hermandades/updatelocation:
+    patch:
+      tags:
+      - hermandades
+      summary: Actualizar localización de una hermandad
+      description: Actualiza la latitud y longitud de una hermandad por su ID.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - latitud
+                - longitud
+              properties:
+                id:
+                  type: integer
+                  example: 10
+                latitud:
+                  type: string
+                  example: "37.2614"
+                longitud:
+                  type: string
+                  example: "-6.9421"
+      responses:
+        '200':
+          description: Coordenadas actualizadas correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: Todo ok
+        '404':
+          description: Hermandad no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Hermandad no encontrada
+        '500':
+          description: Error al actualizar las coordenadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al actualizar las coordenadas
+  /hermandades/location/{id}:
+    get:
+      tags:
+      - hermandades
+      summary: Obtener localización de una hermandad
+      description: Retorna la latitud y longitud de una hermandad si están disponibles.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numérico de la hermandad
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: Coordenadas de la hermandad encontradas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 10
+                  latitud:
+                    type: string
+                    example: "37.2614"
+                  longitud:
+                    type: string
+                    example: "-6.9421"
+        '400':
+          description: La hermandad no tiene coordenadas registradas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No hay datos de localización disponibles para esta hermandad
+        '404':
+          description: Hermandad no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Hermandad no encontrada
+        '500':
+          description: Error interno al obtener la información
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Hubo un problema al obtener la información de la hermandad
+  /register:
+    post:
+      tags:
+      - usuarios
+      summary: Crear un nuevo usuario
+      description: Registra un nuevo usuario con nombre, correo y contraseña (hasheada).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+                - correo
+                - contrasena
+              properties:
+                nombre:
+                  type: string
+                  example: juanito
+                correo:
+                  type: string
+                  format: email
+                  example: juanito@example.com
+                contrasena:
+                  type: string
+                  format: password
+                  example: mipassword123
+      responses:
+        '200':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nombre:
+                    type: string
+                    example: juanito
+                  correo:
+                    type: string
+                    example: juanito@example.com
+                  contrasena:
+                    type: string
+                    description: Contraseña hasheada
+                    example: $2b$10$E...HashedValue
+        '500':
+          description: Error al crear el usuario (usuario existente o error de servidor)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Usuario y/o correo ya existente
+  /login:
+    post:
+      tags:
+      - usuarios
+      summary: Autenticación de usuario
+      description: Verifica las credenciales del usuario y devuelve un token JWT si son válidas.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - correo
+                - contrasena
+              properties:
+                correo:
+                  type: string
+                  format: email
+                  example: juanito@example.com
+                contrasena:
+                  type: string
+                  format: password
+                  example: mipassword123
+      responses:
+        '200':
+          description: Usuario autenticado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nombre:
+                    type: string
+                    example: juanito
+                  correo:
+                    type: string
+                    format: email
+                    example: juanito@example.com
+                  avatar:
+                    type: string
+                    example: assets/images/juanito.jpg
+                  token:
+                    type: string
+                    description: Token JWT de autenticación
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  rol:
+                    type: string
+                    example: usuario
+        '400':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Contraseña incorrecta
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error en el servidor
+  /usuarios:
+    get:
+      tags:
+      - usuarios
+      summary: Obtener todos los usuarios
+      description: Devuelve una lista con todos los usuarios registrados.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nombre:
+                      type: string
+                      example: juanito
+                    correo:
+                      type: string
+                      example: juanito@example.com
+                    avatar:
+                      type: string
+                      example: assets/images/juanito.jpg
+                    rol:
+                      type: string
+                      example: usuario
+        '500':
+          description: Error al obtener usuarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al obtener los usuarios
+  /usuarios/{id}:
+    get:
+      tags:
+      - usuarios
+      summary: Obtener usuario por ID
+      description: Devuelve los datos de un usuario específico si existe.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario
+          example: 1
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nombre:
+                    type: string
+                    example: juanito
+                  correo:
+                    type: string
+                    format: email
+                    example: juanito@example.com
+                  avatar:
+                    type: string
+                    example: assets/images/juanito.jpg
+                  rol:
+                    type: string
+                    example: usuario
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Usuario no encontrado
+        '500':
+          description: Error interno al obtener el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error obteniendo usuario
+      security:
+        - BearerAuth: []
+    put:
+      tags:
+      - usuarios
+      summary: Actualizar usuario
+      description: Actualiza el nombre, correo y contraseña de un usuario dado su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario a actualizar
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: juanitoNuevo
+                correo:
+                  type: string
+                  format: email
+                  example: juanitoNuevo@example.com
+                contraseña:
+                  type: string
+                  format: password
+                  example: nuevacontraseña123
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nombre:
+                    type: string
+                    example: juanitoNuevo
+                  correo:
+                    type: string
+                    example: juanitoNuevo@example.com
+                  contraseña:
+                    type: string
+                    example: nuevacontraseña123
+        '500':
+          description: Error al actualizar el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error actualizando usuario
+      security:
+        - BearerAuth: []
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - usuarios
+      summary: Eliminar usuario
+      description: Elimina un usuario de la base de datos dado su ID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario a eliminar
+          example: 1
+      responses:
+        '200':
+          description: Usuario eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: Usuario eliminado
+        '500':
+          description: Error al eliminar el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error eliminando usuario
+  /images/{id_hdad}:
+    get:
+      tags:
+      - imagenes
+      summary: Obtener imágenes de una hermandad
+      description: Devuelve las URLs de las imágenes asociadas a una hermandad especificada por su ID.
+      parameters:
+        - in: path
+          name: id_hdad
+          required: true
+          schema:
+            type: integer
+          description: ID de la hermandad
+          example: 1
+      responses:
+        '200':
+          description: Imágenes obtenidas correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  urls:
+                    type: array
+                    items:
+                      type: string
+                      example: "https://example.com/images/imagen1.jpg"
+        '404':
+          description: No se encontraron imágenes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No se encontraron imágenes"
+        '500':
+          description: Error al obtener las imágenes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error obteniendo las imágenes"
+    post:
+      tags:
+      - imagenes
+      summary: Añadir imágenes a una hermandad
+      description: Añade una o más imágenes a una hermandad especificada por su ID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id_hdad
+          required: true
+          schema:
+            type: integer
+          description: ID de la hermandad
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image_urls:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                    example: "https://example.com/images/imagen1.jpg"
+      responses:
+        '201':
+          description: Imágenes añadidas correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Imagenes añadidas correctamente"
+        '400':
+          description: No se proporcionaron imágenes o las imágenes están vacías
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Debe proporcionar al menos una URL de imagen"
+        '409':
+          description: La imagen ya existe en la base de datos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "La imagen ya existe en la base de datos"
+        '500':
+          description: Error al añadir las imágenes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error añadiendo las imagenes"
+  /images/{id_hdad}/{image_url}:
+    delete:
+      tags:
+      - imagenes
+      summary: Eliminar una imagen asociada a una hermandad
+      description: Elimina la imagen asociada a la hermandad con el `id_hdad` y el
+        `image_url` proporcionados.
+      security:
+        - BearerAuth: []
+      operationId: deleteImage
+      parameters:
+      - name: id_hdad
+        in: path
+        description: ID de la hermandad que contiene la imagen.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: image_url
+        in: path
+        description: URL de la imagen a eliminar.
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Imagen eliminada con éxito.
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Imagen borrada con éxito
+        "400":
+          description: "Solicitud incorrecta (falta `id_hdad` o `image_url`, o el\
+            \ formato de `id_hdad` es incorrecto)."
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Faltan parámetros necesarios: id_hdad o image_url"
+        "404":
+          description: Imagen no encontrada o no existe.
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Imagen no encontrada o no existe
+        "500":
+          description: Error interno del servidor al eliminar la imagen.
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error eliminando la imagen
+  /devotos:
+    get:
+      tags:
+      - devotos
+      summary: Obtener todos los devotos
+      description: Devuelve una lista de todos los devotos registrados en la base de datos.
+      responses:
+        '200':
+          description: Lista de devotos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id_hdad:
+                      type: integer
+                      example: 7
+                    id_usuario:
+                      type: integer
+                      example: 1
+        '500':
+          description: Error al obtener los devotos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error obteniendo los devotos"
+    post:
+      tags:
+      - devotos
+      summary: Crear un nuevo devoto
+      description: Crea una relación entre un usuario y una hermandad.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_usuario:
+                  type: integer
+                  description: ID del usuario (devoto)
+                  example: 1
+                id_hdad:
+                  type: integer
+                  description: ID de la hermandad
+                  example: 7
+      responses:
+        '200':
+          description: Devoto creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_usuario:
+                    type: integer
+                    example: 1
+                  id_hdad:
+                    type: integer
+                    example: 7
+        '500':
+          description: Error al crear el devoto o al validar usuario/hermandad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario o hermandad no existente"
+        '400':
+          description: Error al proporcionar datos inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error creando devoto"
+  /devotos/{id_hdad}/usuario/{id_usuario}:
+   delete:
+      tags:
+      - devotos
+      summary: Elimina la relación entre un usuario y una hermandad.
+      description: Elimina la relación entre un usuario y una hermandad.
+      operationId: deleteDevoto
+      parameters:
+        - name: id_hdad
+          in: path
+          description: ID de la hermandad
+          required: true
+          schema:
+            type: integer
+            example: 4
+        - name: id_usuario
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Devoto eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Devoto eliminado"
+        '400':
+          description: Faltan parámetros en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Faltan parámetros necesarios (id_hdad, id_usuario)."
+        '404':
+          description: No se encontró el devoto con los ID proporcionados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Devoto no encontrado."
+        '500':
+          description: Error interno en el servidor al intentar eliminar el devoto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error interno del servidor al eliminar el devoto."
+      security:
+        - BearerAuth: []
+  /devotos/user/{id_usuario}:
+    get:
+      tags:
+      - devotos
+      summary: Obtener hermandades seguidas por un usuario
+      description: Devuelve una lista de hermandades que un usuario sigue como devoto.
+      parameters:
+        - name: id_usuario
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario
+          example: 2
+      responses:
+        '200':
+          description: Lista de hermandades seguidas por el usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id_usuario:
+                      type: integer
+                      example: 2
+                    id_hdad:
+                      type: integer
+                      example: 7
+                    hermandades:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 7
+                        nombre:
+                          type: string
+                          example: "Hermandad de la Victoria"
+                        escudo:
+                          type: string
+                          example: "https://example.com/escudo.png"
+        '404':
+          description: El usuario no sigue a ninguna hermandad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Usuario no sigue a ninguna hermandad"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error obteniendo devoto"
+  /devotos/hdad/{id_hdad}:
+    get:
+      tags:
+      - devotos
+      summary: Obtener usuarios que siguen a una hermandad
+      description: Devuelve una lista de devotos (usuarios) que siguen a una hermandad específica.
+      parameters:
+        - name: id_hdad
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la hermandad
+          example: 7
+      responses:
+        '200':
+          description: Lista de usuarios que siguen a la hermandad
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    id_hdad:
+                      type: integer
+                      example: 7
+                    id_usuario:
+                      type: integer
+                      example: 2
+        '404':
+          description: No se encontraron devotos para esta hermandad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Devoto no encontrado"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error obteniendo devoto"
+  /devotos/comprobarrelacion:
+    post:
+      tags:
+      - devotos
+      summary: Verificar si un usuario sigue a una hermandad
+      description: Comprueba si existe una relación devoto-hermandad entre un usuario y una hermandad.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_hdad
+                - id_usuario
+              properties:
+                id_hdad:
+                  type: integer
+                  example: 7
+                id_usuario:
+                  type: integer
+                  example: 2
+      responses:
+        '200':
+          description: Resultado de la comprobación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  existe:
+                    type: boolean
+                    example: true
+                  mensaje:
+                    type: string
+                    example: "La relación existe."
+        '400':
+          description: Parámetros requeridos faltantes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id_hdad y id_usuario son requeridos"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Ocurrió un error al verificar la relación."
+  /eventos:
+    get:
+      tags:
+      - eventos
+      summary: Obtener todos los eventos
+      description: Devuelve la lista de todos los eventos junto con el nombre del usuario que los creó.
+      responses:
+        '200':
+          description: Lista de eventos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nombre:
+                      type: string
+                      example: "Procesión de la Esperanza"
+                    descripcion:
+                      type: string
+                      example: "Evento especial de Semana Santa"
+                    fecha:
+                      type: string
+                      format: date-time
+                      example: "2025-03-24T18:00:00.000Z"
+                    nombre_usuario:
+                      type: string
+                      example: "Juan Pérez"
+        '500':
+          description: Error al obtener los eventos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener los eventos"
+    post:
+      tags:
+      - eventos
+      summary: Crear un evento
+      description: Crea un nuevo evento con los datos proporcionados.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+                - descripcion
+                - fecha
+                - id_usuario
+              properties:
+                nombre:
+                  type: string
+                  example: "Procesión de la Esperanza"
+                descripcion:
+                  type: string
+                  example: "Evento especial de Semana Santa"
+                fecha:
+                  type: string
+                  format: date-time
+                  example: "2025-03-24T18:00:00.000Z"
+                id_usuario:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Evento creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 10
+                  nombre:
+                    type: string
+                    example: "Procesión de la Esperanza"
+                  descripcion:
+                    type: string
+                    example: "Evento especial de Semana Santa"
+                  fecha:
+                    type: string
+                    format: date-time
+                    example: "2025-03-24T18:00:00.000Z"
+                  id_usuario:
+                    type: integer
+                    example: 1
+        '500':
+          description: Error al crear el evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al crear el evento"
+  /eventos/{id}:
+    get:
+      tags:
+      - eventos
+      summary: Obtener evento por ID
+      description: Recupera la información de un evento específico usando su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del evento
+      responses:
+        '200':
+          description: Evento encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 5
+                  nombre:
+                    type: string
+                    example: "Via Crucis"
+                  descripcion:
+                    type: string
+                    example: "Recorrido penitencial por el centro histórico"
+                  fecha:
+                    type: string
+                    format: date-time
+                    example: "2025-03-25T19:30:00.000Z"
+                  id_usuario:
+                    type: integer
+                    example: 1
+        '404':
+          description: Evento no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Evento no encontrado"
+        '500':
+          description: Error en el servidor al buscar el evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener el evento"
+    put:
+      tags:
+      - eventos
+      summary: Actualizar un evento
+      description: Actualiza los datos de un evento existente utilizando su ID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del evento que se desea actualizar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: "Procesión del Silencio"
+                descripcion:
+                  type: string
+                  example: "Procesión solemne en completo silencio"
+                fecha:
+                  type: string
+                  format: date-time
+                  example: "2025-03-29T21:00:00.000Z"
+                id_usuario:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Evento actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 7
+                  nombre:
+                    type: string
+                    example: "Procesión del Silencio"
+                  descripcion:
+                    type: string
+                    example: "Procesión solemne en completo silencio"
+                  fecha:
+                    type: string
+                    format: date-time
+                    example: "2025-03-29T21:00:00.000Z"
+                  id_usuario:
+                    type: integer
+                    example: 1
+        '500':
+          description: Error al actualizar el evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al actualizar el evento"
+    delete:
+      tags:
+      - eventos
+      summary: Eliminar un evento
+      description: Elimina un evento existente según su ID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del evento que se desea eliminar
+      responses:
+        '200':
+          description: Evento eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Evento eliminado
+        '500':
+          description: Error al eliminar el evento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al eliminar el evento
+  /noticias:
+    get:
+      tags:
+      - noticias
+      summary: Obtener todas las noticias con paginación
+      description: Retorna una lista paginada de noticias ordenadas por fecha descendente.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número de página a obtener
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Número de elementos por página
+      responses:
+        '200':
+          description: Lista de noticias paginadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 5
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 5
+                  totalPages:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 31
+                        titulo:
+                          type: string
+                          example: El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco
+                        cuerpo:
+                          type: string
+                          example: Uno de los grandes estrenos de la Semana Santa de 2025...
+                        fecha:
+                          type: string
+                          format: date-time
+                          example: "2025-04-09T00:00:00.000Z"
+                        imagen:
+                          type: string
+                          format: uri
+                          example: https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg
+        '500':
+          description: Error al obtener noticias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al obtener noticias
+    post:
+      tags:
+      - noticias
+      summary: Crear una nueva noticia
+      description: Crea una nueva noticia en el sistema con los datos proporcionados.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                  description: El título de la noticia.
+                  example: "El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco"
+                cuerpo:
+                  type: string
+                  description: El contenido completo de la noticia.
+                  example: "Uno de los grandes estrenos de la Semana Santa de 2025..."
+                fecha:
+                  type: string
+                  format: date-time
+                  description: La fecha de la noticia en formato ISO 8601.
+                  example: "2025-04-09T00:00:00.000Z"
+                imagen:
+                  type: string
+                  description: La URL de la imagen asociada a la noticia.
+                  example: "https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg"
+      responses:
+        '201':
+          description: Noticia creada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID de la noticia creada.
+                    example: 31
+                  titulo:
+                    type: string
+                    description: Título de la noticia.
+                    example: "El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco"
+                  cuerpo:
+                    type: string
+                    description: Cuerpo de la noticia.
+                    example: "Uno de los grandes estrenos de la Semana Santa de 2025..."
+                  fecha:
+                    type: string
+                    format: date-time
+                    description: Fecha de la noticia.
+                    example: "2025-04-09T00:00:00.000Z"
+                  imagen:
+                    type: string
+                    description: URL de la imagen asociada a la noticia.
+                    example: "https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg"
+        '400':
+          description: Error en los datos proporcionados (ej. fecha inválida).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Fecha inválida"
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error creando noticia"
+  /noticias/search:
+    get:
+      tags:
+      - noticias
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+      - name: page
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+  /noticias/{id}:
+    get:
+      tags:
+      - noticias
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "404":
+          description: Not Found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+    put:
+      tags:
+      - noticias
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: object
+                  example: any
+                cuerpo:
+                  type: object
+                  example: any
+                fecha:
+                  type: object
+                  example: any
+                imagen:
+                  type: object
+                  example: any
+        required: false
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - noticias
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+x-original-swagger-version: "2.0"
+

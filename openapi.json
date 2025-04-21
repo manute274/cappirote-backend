@@ -3,7 +3,7 @@
   "info": {
     "title": "API CAPPirote",
     "description": "Documentación de la API CAPPirote",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "servers": [
     {
@@ -36,6 +36,85 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Hermandad": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 8
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Hdad de El Perdón"
+          },
+          "apelativo": {
+            "type": "string",
+            "example": "El Perdón"
+          },
+          "fundacion": {
+            "type": "integer",
+            "example": 1984
+          },
+          "titulares": {
+            "type": "string",
+            "example": "Santísimo Cristo del Perdón y Nuestra Señora de los Dolores"
+          },
+          "sede": {
+            "type": "string",
+            "example": "Parroquia Santa Teresa de Jesús"
+          },
+          "dia": {
+            "type": "string",
+            "example": "Lunes Santo"
+          },
+          "itinerario": {
+            "type": "string",
+            "example": "Templo, Plaza Cristo del Perdón, Avenida Virgen de los Dolores del Perdon, ...\n"
+          },
+          "escudo": {
+            "type": "string",
+            "example": "assets/images/Escudo-Perdon.jpg"
+          },
+          "latitud": {
+            "type": "string",
+            "nullable": true,
+            "example": "37.2614"
+          },
+          "longitud": {
+            "type": "string",
+            "nullable": true,
+            "example": "-6.9421"
+          }
+        }
+      },
+      "Noticia": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "El ID de la noticia."
+          },
+          "titulo": {
+            "type": "string",
+            "description": "El título de la noticia."
+          },
+          "cuerpo": {
+            "type": "string",
+            "description": "El contenido completo de la noticia."
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time",
+            "description": "La fecha de la noticia."
+          },
+          "imagen": {
+            "type": "string",
+            "description": "URL de la imagen asociada a la noticia."
+          }
+        }
       }
     }
   },
@@ -241,6 +320,11 @@
         ],
         "summary": "Actualiza una Hermandad",
         "description": "Actualiza una Hermandad",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -321,6 +405,11 @@
         ],
         "summary": "Borra una hermandad",
         "description": "Borra una hermandad",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -348,11 +437,14 @@
         "tags": [
           "hermandades"
         ],
+        "summary": "Obtener hermandades por día",
+        "description": "Retorna un listado de hermandades que procesionan en el día especificado.",
         "parameters": [
           {
             "name": "dia",
             "in": "path",
             "required": true,
+            "description": "Día de la Semana Santa (\"Domingo de Ramos\", \"Lunes Santo\", \"Martes Santo\", etc.)",
             "schema": {
               "type": "string"
             }
@@ -360,12 +452,33 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de hermandades para el día especificado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Hermandad"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error del servidor al obtener las hermandades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al obtener las hermandades"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -375,45 +488,92 @@
         "tags": [
           "hermandades"
         ],
+        "summary": "Actualizar localización de una hermandad",
+        "description": "Actualiza la latitud y longitud de una hermandad por su ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "id",
+                  "latitud",
+                  "longitud"
+                ],
                 "properties": {
                   "id": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "example": 10
                   },
                   "latitud": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "37.2614"
                   },
                   "longitud": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "-6.9421"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Coordenadas actualizadas correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Todo ok"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "Hermandad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Hermandad no encontrada"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al actualizar las coordenadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al actualizar las coordenadas"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/hermandades/location/{id}": {
@@ -421,32 +581,92 @@
         "tags": [
           "hermandades"
         ],
+        "summary": "Obtener localización de una hermandad",
+        "description": "Retorna la latitud y longitud de una hermandad si están disponibles.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "ID numérico de la hermandad",
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "example": 10
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Coordenadas de la hermandad encontradas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "latitud": {
+                      "type": "string",
+                      "example": "37.2614"
+                    },
+                    "longitud": {
+                      "type": "string",
+                      "example": "-6.9421"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad Request",
-            "content": {}
+            "description": "La hermandad no tiene coordenadas registradas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "No hay datos de localización disponibles para esta hermandad"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "Hermandad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Hermandad no encontrada"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno al obtener la información",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Hubo un problema al obtener la información de la hermandad"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -456,41 +676,86 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Crear un nuevo usuario",
+        "description": "Registra un nuevo usuario con nombre, correo y contraseña (hasheada).",
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "nombre",
+                  "correo",
+                  "contrasena"
+                ],
                 "properties": {
                   "nombre": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "juanito"
                   },
                   "correo": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "email",
+                    "example": "juanito@example.com"
                   },
                   "contrasena": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "password",
+                    "example": "mipassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "juanito"
+                    },
+                    "correo": {
+                      "type": "string",
+                      "example": "juanito@example.com"
+                    },
+                    "contrasena": {
+                      "type": "string",
+                      "description": "Contraseña hasheada",
+                      "example": "$2b$10$E...HashedValue"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al crear el usuario (usuario existente o error de servidor)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Usuario y/o correo ya existente"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/login": {
@@ -498,41 +763,106 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Autenticación de usuario",
+        "description": "Verifica las credenciales del usuario y devuelve un token JWT si son válidas.",
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "correo",
+                  "contrasena"
+                ],
                 "properties": {
                   "correo": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "email",
+                    "example": "juanito@example.com"
                   },
                   "contrasena": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "password",
+                    "example": "mipassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario autenticado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "juanito"
+                    },
+                    "correo": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "juanito@example.com"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "assets/images/juanito.jpg"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "Token JWT de autenticación",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "rol": {
+                      "type": "string",
+                      "example": "usuario"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
           "400": {
-            "description": "Bad Request",
-            "content": {}
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Contraseña incorrecta"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error en el servidor"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/usuarios": {
@@ -540,6 +870,8 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Obtener todos los usuarios",
+        "description": "Devuelve una lista con todos los usuarios registrados.",
         "security": [
           {
             "BearerAuth": []
@@ -547,16 +879,55 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Lista de usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "example": "juanito"
+                      },
+                      "correo": {
+                        "type": "string",
+                        "example": "juanito@example.com"
+                      },
+                      "avatar": {
+                        "type": "string",
+                        "example": "assets/images/juanito.jpg"
+                      },
+                      "rol": {
+                        "type": "string",
+                        "example": "usuario"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al obtener usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al obtener los usuarios"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -566,32 +937,85 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Obtener usuario por ID",
+        "description": "Devuelve los datos de un usuario específico si existe.",
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del usuario",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Usuario encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "juanito"
+                    },
+                    "correo": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "juanito@example.com"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "assets/images/juanito.jpg"
+                    },
+                    "rol": {
+                      "type": "string",
+                      "example": "usuario"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "Usuario no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Usuario no encontrado"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno al obtener el usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error obteniendo usuario"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -604,52 +1028,90 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Actualizar usuario",
+        "description": "Actualiza el nombre, correo y contraseña de un usuario dado su ID.",
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del usuario a actualizar",
+            "example": 1
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "nombre": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "juanitoNuevo"
                   },
                   "correo": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "email",
+                    "example": "juanitoNuevo@example.com"
                   },
                   "contraseña": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "password",
+                    "example": "nuevacontraseña123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "juanitoNuevo"
+                    },
+                    "correo": {
+                      "type": "string",
+                      "example": "juanitoNuevo@example.com"
+                    },
+                    "contraseña": {
+                      "type": "string",
+                      "example": "nuevacontraseña123"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
-          },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al actualizar el usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error actualizando usuario"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -663,35 +1125,57 @@
         "tags": [
           "usuarios"
         ],
+        "summary": "Eliminar usuario",
+        "description": "Elimina un usuario de la base de datos dado su ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del usuario a eliminar",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Usuario eliminado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Usuario eliminado"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al eliminar el usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error eliminando usuario"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -701,28 +1185,71 @@
         "tags": [
           "imagenes"
         ],
+        "summary": "Obtener imágenes de una hermandad",
+        "description": "Devuelve las URLs de las imágenes asociadas a una hermandad especificada por su ID.",
         "parameters": [
           {
-            "name": "id_hdad",
             "in": "path",
+            "name": "id_hdad",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID de la hermandad",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Imágenes obtenidas correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "https://example.com/images/imagen1.jpg"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "No se encontraron imágenes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No se encontraron imágenes"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al obtener las imágenes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error obteniendo las imágenes"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -730,62 +1257,111 @@
         "tags": [
           "imagenes"
         ],
+        "summary": "Añadir imágenes a una hermandad",
+        "description": "Añade una o más imágenes a una hermandad especificada por su ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id_hdad",
             "in": "path",
+            "name": "id_hdad",
             "required": true,
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID de la hermandad",
+            "example": 1
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "image_urls": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://example.com/images/imagen1.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Imágenes añadidas correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Imagenes añadidas correctamente"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {}
-          },
           "400": {
-            "description": "Bad Request",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "No se proporcionaron imágenes o las imágenes están vacías",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Debe proporcionar al menos una URL de imagen"
+                    }
+                  }
+                }
+              }
+            }
           },
           "409": {
-            "description": "Conflict",
-            "content": {}
+            "description": "La imagen ya existe en la base de datos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "La imagen ya existe en la base de datos"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al añadir las imágenes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error añadiendo las imagenes"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/images/{id_hdad}/{image_url}": {
@@ -795,6 +1371,11 @@
         ],
         "summary": "Eliminar una imagen asociada a una hermandad",
         "description": "Elimina la imagen asociada a la hermandad con el `id_hdad` y el `image_url` proporcionados.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "operationId": "deleteImage",
         "parameters": [
           {
@@ -814,15 +1395,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Token JWT para autenticación (si es necesario).",
-            "schema": {
-              "type": "string",
-              "default": "Bearer {token}"
             }
           }
         ],
@@ -899,10 +1471,47 @@
         "tags": [
           "devotos"
         ],
+        "summary": "Obtener todos los devotos",
+        "description": "Devuelve una lista de todos los devotos registrados en la base de datos.",
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de devotos obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id_hdad": {
+                        "type": "integer",
+                        "example": 7
+                      },
+                      "id_usuario": {
+                        "type": "integer",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener los devotos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error obteniendo los devotos"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -910,50 +1519,89 @@
         "tags": [
           "devotos"
         ],
-        "parameters": [
+        "summary": "Crear un nuevo devoto",
+        "description": "Crea una relación entre un usuario y una hermandad.",
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "BearerAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "id_usuario": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "description": "ID del usuario (devoto)",
+                    "example": 1
                   },
                   "id_hdad": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "description": "ID de la hermandad",
+                    "example": 7
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Devoto creado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_usuario": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "id_hdad": {
+                      "type": "integer",
+                      "example": 7
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+          "400": {
+            "description": "Error al proporcionar datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error creando devoto"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al crear el devoto o al validar usuario/hermandad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Usuario o hermandad no existente"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/devotos/{id_hdad}/usuario/{id_usuario}": {
@@ -1064,28 +1712,92 @@
         "tags": [
           "devotos"
         ],
+        "summary": "Obtener hermandades seguidas por un usuario",
+        "description": "Devuelve una lista de hermandades que un usuario sigue como devoto.",
         "parameters": [
           {
             "name": "id_usuario",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del usuario",
+            "example": 2
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de hermandades seguidas por el usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id_usuario": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "id_hdad": {
+                        "type": "integer",
+                        "example": 7
+                      },
+                      "hermandades": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 7
+                          },
+                          "nombre": {
+                            "type": "string",
+                            "example": "Hermandad de la Victoria"
+                          },
+                          "escudo": {
+                            "type": "string",
+                            "example": "https://example.com/escudo.png"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "El usuario no sigue a ninguna hermandad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario no sigue a ninguna hermandad"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error obteniendo devoto"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1095,28 +1807,79 @@
         "tags": [
           "devotos"
         ],
+        "summary": "Obtener usuarios que siguen a una hermandad",
+        "description": "Devuelve una lista de devotos (usuarios) que siguen a una hermandad específica.",
         "parameters": [
           {
             "name": "id_hdad",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID de la hermandad",
+            "example": 7
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de usuarios que siguen a la hermandad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "id_hdad": {
+                        "type": "integer",
+                        "example": 7
+                      },
+                      "id_usuario": {
+                        "type": "integer",
+                        "example": 2
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "No se encontraron devotos para esta hermandad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Devoto no encontrado"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error obteniendo devoto"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1126,43 +1889,86 @@
         "tags": [
           "devotos"
         ],
-        "summary": "Comprueba la existencia de relacion entre Hdad y usuario",
-        "description": "Comprueba la existencia de relacion entre Hdad y usuario",
+        "summary": "Verificar si un usuario sigue a una hermandad",
+        "description": "Comprueba si existe una relación devoto-hermandad entre un usuario y una hermandad.",
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "id_hdad",
+                  "id_usuario"
+                ],
                 "properties": {
                   "id_hdad": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "example": 7
                   },
                   "id_usuario": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resultado de la comprobación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "existe": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "mensaje": {
+                      "type": "string",
+                      "example": "La relación existe."
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
           "400": {
-            "description": "Bad Request",
-            "content": {}
+            "description": "Parámetros requeridos faltantes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "id_hdad y id_usuario son requeridos"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Ocurrió un error al verificar la relación."
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/eventos": {
@@ -1170,14 +1976,60 @@
         "tags": [
           "eventos"
         ],
+        "summary": "Obtener todos los eventos",
+        "description": "Devuelve la lista de todos los eventos junto con el nombre del usuario que los creó.",
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de eventos obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "example": "Procesión de la Esperanza"
+                      },
+                      "descripcion": {
+                        "type": "string",
+                        "example": "Evento especial de Semana Santa"
+                      },
+                      "fecha": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-24T18:00:00.000Z"
+                      },
+                      "nombre_usuario": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al obtener los eventos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al obtener los eventos"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1185,58 +2037,99 @@
         "tags": [
           "eventos"
         ],
-        "parameters": [
+        "summary": "Crear un evento",
+        "description": "Crea un nuevo evento con los datos proporcionados.",
+        "security": [
           {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
+            "BearerAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "nombre",
+                  "descripcion",
+                  "fecha",
+                  "id_usuario"
+                ],
                 "properties": {
                   "nombre": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "Procesión de la Esperanza"
                   },
                   "descripcion": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "Evento especial de Semana Santa"
                   },
                   "fecha": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2025-03-24T18:00:00.000Z"
                   },
                   "id_usuario": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Evento creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "Procesión de la Esperanza"
+                    },
+                    "descripcion": {
+                      "type": "string",
+                      "example": "Evento especial de Semana Santa"
+                    },
+                    "fecha": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-24T18:00:00.000Z"
+                    },
+                    "id_usuario": {
+                      "type": "integer",
+                      "example": 1
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
-          },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al crear el evento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al crear el evento"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/eventos/{id}": {
@@ -1244,28 +2137,84 @@
         "tags": [
           "eventos"
         ],
+        "summary": "Obtener evento por ID",
+        "description": "Recupera la información de un evento específico usando su ID.",
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del evento"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Evento encontrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "Via Crucis"
+                    },
+                    "descripcion": {
+                      "type": "string",
+                      "example": "Recorrido penitencial por el centro histórico"
+                    },
+                    "fecha": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-25T19:30:00.000Z"
+                    },
+                    "id_usuario": {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found",
-            "content": {}
+            "description": "Evento no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Evento no encontrado"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error en el servidor al buscar el evento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al obtener el evento"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1273,89 +2222,159 @@
         "tags": [
           "eventos"
         ],
+        "summary": "Actualizar un evento",
+        "description": "Actualiza los datos de un evento existente utilizando su ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del evento que se desea actualizar"
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "nombre": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "Procesión del Silencio"
                   },
                   "descripcion": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "example": "Procesión solemne en completo silencio"
                   },
                   "fecha": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2025-03-29T21:00:00.000Z"
                   },
                   "id_usuario": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Evento actualizado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 7
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "Procesión del Silencio"
+                    },
+                    "descripcion": {
+                      "type": "string",
+                      "example": "Procesión solemne en completo silencio"
+                    },
+                    "fecha": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-29T21:00:00.000Z"
+                    },
+                    "id_usuario": {
+                      "type": "integer",
+                      "example": 1
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
-          },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al actualizar el evento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al actualizar el evento"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       },
       "delete": {
         "tags": [
           "eventos"
         ],
+        "summary": "Eliminar un evento",
+        "description": "Elimina un evento existente según su ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
+              "type": "integer"
+            },
+            "description": "ID del evento que se desea eliminar"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Evento eliminado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Evento eliminado"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al eliminar el evento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al eliminar el evento"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1365,30 +2384,102 @@
         "tags": [
           "noticias"
         ],
+        "summary": "Obtener todas las noticias con paginación",
+        "description": "Retorna una lista paginada de noticias ordenadas por fecha descendente.",
         "parameters": [
           {
-            "name": "page",
             "in": "query",
+            "name": "page",
             "schema": {
-              "type": "string"
-            }
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Número de página a obtener"
           },
           {
-            "name": "limit",
             "in": "query",
+            "name": "limit",
             "schema": {
-              "type": "string"
-            }
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Número de elementos por página"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "Lista de noticias paginadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 31
+                          },
+                          "titulo": {
+                            "type": "string",
+                            "example": "El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco"
+                          },
+                          "cuerpo": {
+                            "type": "string",
+                            "example": "Uno de los grandes estrenos de la Semana Santa de 2025..."
+                          },
+                          "fecha": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-04-09T00:00:00.000Z"
+                          },
+                          "imagen": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error al obtener noticias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error al obtener noticias"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1396,45 +2487,118 @@
         "tags": [
           "noticias"
         ],
+        "summary": "Crear una nueva noticia",
+        "description": "Crea una nueva noticia en el sistema con los datos proporcionados.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "titulo": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "description": "El título de la noticia.",
+                    "example": "El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco"
                   },
                   "cuerpo": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "description": "El contenido completo de la noticia.",
+                    "example": "Uno de los grandes estrenos de la Semana Santa de 2025..."
                   },
                   "fecha": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "La fecha de la noticia en formato ISO 8601.",
+                    "example": "2025-04-09T00:00:00.000Z"
                   },
                   "imagen": {
-                    "type": "object",
-                    "example": "any"
+                    "type": "string",
+                    "description": "La URL de la imagen asociada a la noticia.",
+                    "example": "https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Noticia creada exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "ID de la noticia creada.",
+                      "example": 31
+                    },
+                    "titulo": {
+                      "type": "string",
+                      "description": "Título de la noticia.",
+                      "example": "El frontal del paso del Cristo de la Preciosa Sangre ya luce en el Huerto Paco"
+                    },
+                    "cuerpo": {
+                      "type": "string",
+                      "description": "Cuerpo de la noticia.",
+                      "example": "Uno de los grandes estrenos de la Semana Santa de 2025..."
+                    },
+                    "fecha": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Fecha de la noticia.",
+                      "example": "2025-04-09T00:00:00.000Z"
+                    },
+                    "imagen": {
+                      "type": "string",
+                      "description": "URL de la imagen asociada a la noticia.",
+                      "example": "https://cuartotramo.com/wp-content/uploads/2025/04/Paso-Preciosa-Sangre.jpg"
+                    }
                   }
                 }
               }
             }
           },
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {}
+          "400": {
+            "description": "Error en los datos proporcionados (ej. fecha inválida).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Fecha inválida"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error",
-            "content": {}
+            "description": "Error interno del servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Error creando noticia"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "x-codegen-request-body-name": "body"
+        }
       }
     },
     "/noticias/search": {
@@ -1511,6 +2675,11 @@
         "tags": [
           "noticias"
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -1564,6 +2733,11 @@
       "delete": {
         "tags": [
           "noticias"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
         ],
         "parameters": [
           {
