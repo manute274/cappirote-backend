@@ -11,7 +11,7 @@ export const createEvents = async (req, res) => {
         data: {
           nombre,
           descripcion,
-          fecha,
+          fecha: new Date(fecha),
           id_usuario,
         },
       });
